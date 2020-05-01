@@ -1,0 +1,25 @@
+{
+  "name": "node-comfoairq",
+  "version": "0.0.1",
+  "description": "NodeJS Zehnder ComfoAirQ implementation",
+  "main": "lib/comfoconnect.js",
+  "keywords": [
+    "zehnder",
+    "comfoairQ",
+    "bridge",
+    "protocol",
+    "api"
+  ],
+  "engines": {
+    "node": ">=0.10"
+  },
+  "author": "Jan Van Belle",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/herrJones/node-comfoairq.git"
+  },
+  "dependencies": {
+    "pbf": "^3.2.1"
+  }
+}
