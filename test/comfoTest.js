@@ -8,23 +8,27 @@ const trmnl = readline.createInterface({
     output: process.stdout
 });
 
-var checkFeedback = false;
+var connected = false;
 
-function getFeedback() {
-  if (!checkFeedback) {
-    setTimeout(getFeedback, 500);
-    return;
-  }
+async function getResponse() {
 
-  zehnder.notifies((data) => {
-    let rxdata = JSON.stringify(data);
-    if (rxdata != '{}') {
-      console.log(rxdata);
-    }
+  zehnder.receive()
+    .catch((exc) => {
+      console.error(exc);
+
+      if (exc.message == 'NOT_ALLOWED') {
+        //
+      }
+    })
+    .then((data) => {
+      let rxdata = JSON.stringify(data);
+      if (rxdata != '{}') {
+        console.log(rxdata);
+      }
+    });
     
-    setTimeout(getFeedback, 500);
-    zehnder.keepalive((data) => {});
-  })
+  setTimeout(getResponse, 500);
+  zehnder.keepalive();
 }
 
 var waitForCommand = function () {
@@ -48,68 +52,45 @@ var waitForCommand = function () {
     } else if (answer == "lapp") {
       console.log('list registered apps\n');
       
-      zehnder.listapps((data) => {
-        console.log(JSON.stringify(data))
-      });
+      zehnder.listapps();
       
     } else if (answer == "rapp") {
       console.log('register this app\n');
-   
-      zehnder.register((data) => {
-        console.log(JSON.stringify(data))
-      })
+      
+      zehnder.register();
 
 
     } else if (answer.startsWith("uapp")) {
       console.log('unregister this app\n');
-   
+     
       let uuid = answer.slice(5);
-      zehnder.unregister(uuid, (data) => {
-        console.log(JSON.stringify(data))
-      })
+      zehnder.unregister(uuid);
 
     } else if (answer == "info") {
       console.log('fetch ComfoAir info\n');
 
-      zehnder.version((data) => {
-        console.log(JSON.stringify(data))
-      });
+      zehnder.version();
       
     } else if (answer == "conn") {
       console.log('connect to ComfoAir unit\n');
       
-      zehnder.connect(true, (data) => {
-        //if (data.error == 'NOT_ALLOWED') {
-        //  zehnder.register((data) => {
-            
-        console.log(JSON.stringify(data));
-        checkFeedback = true
-        //    console.log('please connect again');
-        //  })
-        //}
-      });
+      zehnder.connect(true);
+      connected = true;
     } else if (answer.startsWith("sens")) {
       console.log('register to updates on sensors\n');
 
       let sensID = answer.slice(5)
-      zehnder.sensors(Number(sensID), (data) => {
-        console.log(JSON.stringify(data));
-
-        //checkSensors = true;
-      }).catch((err) => {
-        console.warn('rejected : ' + err)
-      })
+      zehnder.sensors(Number(sensID));
 
       //checkSensors = true;
     } else if (answer == "disc") {
       console.log('disconnect from ComfoAir unit\n'); 
-      zehnder.disconnect((data) => {
-        console.log(JSON.stringify(data));
-        checkFeedback = false;
-      });
+      zehnder.disconnect();
+      connected = false;
     } else if (answer == "quit") {
       console.log('closing down');
       zehnder.disconnect();
+      connected = false;
       trmnl.close();
     } 
         
@@ -122,7 +103,7 @@ var waitForCommand = function () {
 
 waitForCommand();
 
-getFeedback();
+getResponse();
 
 trmnl.on("close", function() {
     console.log("\nBYE BYE !!!");
