@@ -1,6 +1,9 @@
 'use strict'
 
 const zehnder = require('../lib/comfoconnect');
+const settings = require(__dirname + "/settings.json");
+
+
 
 const readline = require("readline");
 const trmnl = readline.createInterface({
@@ -8,16 +11,25 @@ const trmnl = readline.createInterface({
     output: process.stdout
 });
 
+var initialized = false;
 var connected = false;
 
-async function getResponse() {
+async function getResponse(force = false) {
+
+  if (!initialized) {
+    zehnder.options.device = settings.device;
+    zehnder.options.comfoair = settings.comfoair;
+    zehnder.options.uuid = Buffer.from(settings.uuid, 'hex');
+    zehnder.options.pin = settings.pin;
+    initialized = true;
+  }
 
   zehnder.receive()
     .catch((exc) => {
       console.error(exc);
 
       if (exc.message == 'NOT_ALLOWED') {
-        //
+        zehnder.register();
       }
     })
     .then((data) => {
@@ -26,9 +38,14 @@ async function getResponse() {
         console.log(rxdata);
       }
     });
-    
-  setTimeout(getResponse, 500);
-  zehnder.keepalive();
+
+  if (connected) {
+    zehnder.keepalive();
+  }
+  if (!force) {
+    setTimeout(getResponse, 250);
+  }
+  
 }
 
 var waitForCommand = function () {
@@ -53,24 +70,34 @@ var waitForCommand = function () {
       console.log('list registered apps\n');
       
       zehnder.listapps();
-      
+      if (!connected) {
+        getResponse(true);
+      }
     } else if (answer == "rapp") {
       console.log('register this app\n');
       
       zehnder.register();
-
+      if (!connected) {
+        getResponse(true);
+      }
 
     } else if (answer.startsWith("uapp")) {
       console.log('unregister this app\n');
      
       let uuid = answer.slice(5);
       zehnder.unregister(uuid);
+      if (!connected) {
+        getResponse(true);
+      }
 
     } else if (answer == "info") {
       console.log('fetch ComfoAir info\n');
 
       zehnder.version();
-      
+      if (!connected) {
+        getResponse(true);
+      }
+
     } else if (answer == "conn") {
       console.log('connect to ComfoAir unit\n');
       
@@ -98,12 +125,11 @@ var waitForCommand = function () {
     
   });
 
-  
 }
 
 waitForCommand();
 
-getResponse();
+setTimeout(getResponse, 500);
 
 trmnl.on("close", function() {
     console.log("\nBYE BYE !!!");
