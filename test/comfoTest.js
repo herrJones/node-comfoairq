@@ -24,7 +24,8 @@ async function getResponse(force = false) {
     initialized = true;
   }
 
-  zehnder.receive()
+  if (connected) {
+    zehnder.receive()
     .catch((exc) => {
       console.error(exc);
 
@@ -39,11 +40,14 @@ async function getResponse(force = false) {
       }
     });
 
+  }
+  
+
   if (connected) {
     zehnder.keepalive();
   }
   if (!force) {
-    setTimeout(getResponse, 250);
+    setTimeout(getResponse, 1000);
   }
   
 }
@@ -101,8 +105,13 @@ var waitForCommand = function () {
     } else if (answer == "conn") {
       console.log('connect to ComfoAir unit\n');
       
-      zehnder.connect(true);
-      connected = true;
+      zehnder.connect(true).then(async (reason) => {
+        await zehnder.sensors(227);
+        await zehnder.sensors(275);
+        await zehnder.sensors(276);
+        connected = true;
+      });
+      
     } else if (answer.startsWith("sens")) {
       console.log('register to updates on sensors\n');
 
@@ -127,9 +136,13 @@ var waitForCommand = function () {
 
 }
 
+zehnder.bridge.on('receive', () => {
+  console.log('test')
+})
+
 waitForCommand();
 
-setTimeout(getResponse, 500);
+setTimeout(getResponse, 1000);
 
 trmnl.on("close", function() {
     console.log("\nBYE BYE !!!");
