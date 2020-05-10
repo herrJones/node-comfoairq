@@ -24,5 +24,8 @@
     "dgram": "^1.0.1",
     "pbf": "^3.2.1",
     "protobufjs": "^6.9.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.0.0"
   }
 }

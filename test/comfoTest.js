@@ -1,8 +1,11 @@
 'use strict'
 
-const zehnder = require('../lib/comfoconnect');
+const comfo = require('../lib/comfoconnect');
+const zehnder = new comfo()
 const settings = require(__dirname + "/settings.json");
 
+zehnder.settings = settings;
+zehnder.discover();
 
 
 const readline = require("readline");
@@ -14,6 +17,7 @@ const trmnl = readline.createInterface({
 var initialized = false;
 var connected = false;
 
+/*
 async function getResponse(force = false) {
 
   if (!initialized) {
@@ -50,10 +54,10 @@ async function getResponse(force = false) {
     setTimeout(getResponse, 1000);
   }
   
-}
+}*/
 
 var waitForCommand = function () {
-  trmnl.question("zehnder command to test (? for help)  ", function(answer) {
+  trmnl.question("zehnder command to test (? for help)  ",async function(answer) {
     if (answer == "?") {
         console.log("?    -- this help function\n" +
                     "srch -- (re)run discovery\n" +
@@ -73,59 +77,52 @@ var waitForCommand = function () {
     } else if (answer == "lapp") {
       console.log('list registered apps\n');
       
-      zehnder.listapps();
-      if (!connected) {
-        getResponse(true);
-      }
+      let result = await zehnder.ListRegisteredApps();
+      console.log(JSON.stringify(result));
+
     } else if (answer == "rapp") {
       console.log('register this app\n');
       
-      zehnder.register();
-      if (!connected) {
-        getResponse(true);
-      }
+      //zehnder.register();
+      
 
     } else if (answer.startsWith("uapp")) {
       console.log('unregister this app\n');
      
       let uuid = answer.slice(5);
-      zehnder.unregister(uuid);
-      if (!connected) {
-        getResponse(true);
-      }
+      //zehnder.unregister(uuid);
+      
 
     } else if (answer == "info") {
       console.log('fetch ComfoAir info\n');
 
-      zehnder.version();
-      if (!connected) {
-        getResponse(true);
-      }
+      let result = await zehnder.VersionRequest();
+      console.log(JSON.stringify(result));
 
     } else if (answer == "conn") {
       console.log('connect to ComfoAir unit\n');
-      
+      /*
       zehnder.connect(true).then(async (reason) => {
         await zehnder.sensors(227);
         await zehnder.sensors(275);
         await zehnder.sensors(276);
         connected = true;
-      });
+      });*/
       
     } else if (answer.startsWith("sens")) {
       console.log('register to updates on sensors\n');
 
       let sensID = answer.slice(5)
-      zehnder.sensors(Number(sensID));
+      //zehnder.sensors(Number(sensID));
 
       //checkSensors = true;
     } else if (answer == "disc") {
       console.log('disconnect from ComfoAir unit\n'); 
-      zehnder.disconnect();
+      await zehnder.CloseSession();
       connected = false;
     } else if (answer == "quit") {
       console.log('closing down');
-      zehnder.disconnect();
+      await zehnder.CloseSession();
       connected = false;
       trmnl.close();
     } 
@@ -135,14 +132,14 @@ var waitForCommand = function () {
   });
 
 }
-
+/*
 zehnder.bridge.on('receive', () => {
   console.log('test')
-})
+})*/
 
 waitForCommand();
 
-setTimeout(getResponse, 1000);
+//setTimeout(getResponse, 1000);
 
 trmnl.on("close", function() {
     console.log("\nBYE BYE !!!");
