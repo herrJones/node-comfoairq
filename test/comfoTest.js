@@ -14,7 +14,7 @@ const trmnl = readline.createInterface({
     output: process.stdout
 });
 
-var initialized = false;
+//var initialized = false;
 var connected = false;
 
 /*
@@ -56,6 +56,20 @@ async function getResponse(force = false) {
   
 }*/
 
+zehnder.on('receive', (data) => {
+  console.log(JSON.stringify(data));
+});
+
+function keepAlive() {
+  if (!connected) {
+    return  
+  }
+
+  zehnder.KeepAlive();
+
+  setTimeout(keepAlive, 5000);
+}
+
 var waitForCommand = function () {
   trmnl.question("zehnder command to test (? for help)  ",async function(answer) {
     if (answer == "?") {
@@ -73,7 +87,8 @@ var waitForCommand = function () {
     } else if (answer == "srch") {
       console.log('(re)running discovery\n');
 
-      zehnder.discover();
+      let result = await zehnder.discover();
+      console.log(JSON.stringify(result));
     } else if (answer == "lapp") {
       console.log('list registered apps\n');
       
@@ -83,14 +98,15 @@ var waitForCommand = function () {
     } else if (answer == "rapp") {
       console.log('register this app\n');
       
-      //zehnder.register();
-      
+      let result = await zehnder.RegisterApp();
+      console.log(JSON.stringify(result));
 
     } else if (answer.startsWith("uapp")) {
       console.log('unregister this app\n');
      
       let uuid = answer.slice(5);
-      //zehnder.unregister(uuid);
+      let result = await zehnder.DeRegisterApp(uuid);
+      console.log(JSON.stringify(result));
       
 
     } else if (answer == "info") {
@@ -101,19 +117,23 @@ var waitForCommand = function () {
 
     } else if (answer == "conn") {
       console.log('connect to ComfoAir unit\n');
-      /*
-      zehnder.connect(true).then(async (reason) => {
-        await zehnder.sensors(227);
-        await zehnder.sensors(275);
-        await zehnder.sensors(276);
-        connected = true;
-      });*/
+
+      let result = await zehnder.StartSession(true);
+      console.log(JSON.stringify(result));
+      connected = true;
+
+      result = await zehnder.RegisterSensor(227);
+      console.log(JSON.stringify(result));
+
+      connected = true;
+      setTimeout(keepAlive, 5000);
       
     } else if (answer.startsWith("sens")) {
       console.log('register to updates on sensors\n');
 
       let sensID = answer.slice(5)
-      //zehnder.sensors(Number(sensID));
+      let result = await zehnder.RegisterSensor(Number(sensID));
+      console.log(JSON.stringify(result));
 
       //checkSensors = true;
     } else if (answer == "disc") {

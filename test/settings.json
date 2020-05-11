@@ -4,5 +4,5 @@
   "device" : "node-comfoairq",
   "multicast": "10.81.1.255",
   "comfoair": "10.81.1.14",
-  "debug": true
+  "debug": false
 }
