@@ -16,6 +16,7 @@ const trmnl = readline.createInterface({
 
 //var initialized = false;
 var connected = false;
+var reconnect = false;
 
 /*
 async function getResponse(force = false) {
@@ -59,15 +60,44 @@ async function getResponse(force = false) {
 zehnder.on('receive', (data) => {
   console.log(JSON.stringify(data));
 });
+zehnder.on('disconnect', (reason) => {
+  if (reason.state == 'OTHER_SESSION') {
+    console.log('other device became active');
+    reconnect = true;
+  }
+  connected = false;
+})
 
 function keepAlive() {
   if (!connected) {
+    if (reconnect) {
+      setTimeout(restartSession, 15000);
+    }
     return  
   }
 
   zehnder.KeepAlive();
 
   setTimeout(keepAlive, 5000);
+}
+
+async function restartSession() {
+  console.log('** attempting reconnect **')
+
+  try {
+    let result = await zehnder.StartSession(false);
+    console.log(JSON.stringify(result));
+    connected = true;
+
+    result = await zehnder.RegisterSensor(227);
+    console.log(JSON.stringify(result));
+
+    setTimeout(keepAlive, 5000);
+  }
+  catch (exc) {
+    console.log(exc);
+    setTimeout(restartSession, 15000);
+  }
 }
 
 var waitForCommand = function () {
@@ -118,16 +148,20 @@ var waitForCommand = function () {
     } else if (answer == "conn") {
       console.log('connect to ComfoAir unit\n');
 
-      let result = await zehnder.StartSession(true);
-      console.log(JSON.stringify(result));
-      connected = true;
+      try {
+        let result = await zehnder.StartSession(true);
+        console.log(JSON.stringify(result));
+        connected = true;
 
-      result = await zehnder.RegisterSensor(227);
-      console.log(JSON.stringify(result));
+        result = await zehnder.RegisterSensor(227);
+        console.log(JSON.stringify(result));
 
-      connected = true;
-      setTimeout(keepAlive, 5000);
-      
+        setTimeout(keepAlive, 5000);
+      }
+      catch (exc) {
+        console.log(exc);
+      }
+
     } else if (answer.startsWith("sens")) {
       console.log('register to updates on sensors\n');
 
