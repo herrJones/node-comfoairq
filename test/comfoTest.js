@@ -87,9 +87,22 @@ async function restartSession() {
   try {
     let result = await zehnder.StartSession(false);
     console.log(JSON.stringify(result));
+
+    if (result[0].error != 'OK') {
+      throw new Error(result[0].error);
+    }
     connected = true;
 
     result = await zehnder.RegisterSensor(227);
+    console.log(JSON.stringify(result));
+
+    result = await zehnder.RegisterSensor(221);
+    console.log(JSON.stringify(result));
+    result = await zehnder.RegisterSensor(274);
+    console.log(JSON.stringify(result));
+    result = await zehnder.RegisterSensor(275);
+    console.log(JSON.stringify(result));
+    result = await zehnder.RegisterSensor(276);
     console.log(JSON.stringify(result));
 
     setTimeout(keepAlive, 5000);
@@ -154,6 +167,15 @@ var waitForCommand = function () {
         connected = true;
 
         result = await zehnder.RegisterSensor(227);
+        console.log(JSON.stringify(result));
+
+        result = await zehnder.RegisterSensor(221);
+        console.log(JSON.stringify(result));
+        result = await zehnder.RegisterSensor(274);
+        console.log(JSON.stringify(result));
+        result = await zehnder.RegisterSensor(275);
+        console.log(JSON.stringify(result));
+        result = await zehnder.RegisterSensor(276);
         console.log(JSON.stringify(result));
 
         setTimeout(keepAlive, 5000);
