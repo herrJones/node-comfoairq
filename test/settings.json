@@ -1,8 +1,8 @@
 {
-  "pin": 7078,
+  "pin": 1234,
   "uuid" : "20200428000000000000000009080407",
   "device" : "node-comfoairq",
-  "multicast": "10.81.1.255",
-  "comfoair": "10.81.1.14",
-  "debug": false
+  "multicast": "10.1.1.255",
+  "comfoair": "10.1.1.25",
+  "debug": true
 }
