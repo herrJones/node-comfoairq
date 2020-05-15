@@ -14,48 +14,9 @@ const trmnl = readline.createInterface({
     output: process.stdout
 });
 
-//var initialized = false;
 var connected = false;
 var reconnect = false;
 
-/*
-async function getResponse(force = false) {
-
-  if (!initialized) {
-    zehnder.options.device = settings.device;
-    zehnder.options.comfoair = settings.comfoair;
-    zehnder.options.uuid = Buffer.from(settings.uuid, 'hex');
-    zehnder.options.pin = settings.pin;
-    initialized = true;
-  }
-
-  if (connected) {
-    zehnder.receive()
-    .catch((exc) => {
-      console.error(exc);
-
-      if (exc.message == 'NOT_ALLOWED') {
-        zehnder.register();
-      }
-    })
-    .then((data) => {
-      let rxdata = JSON.stringify(data);
-      if (rxdata != '{}') {
-        console.log(rxdata);
-      }
-    });
-
-  }
-  
-
-  if (connected) {
-    zehnder.keepalive();
-  }
-  if (!force) {
-    setTimeout(getResponse, 1000);
-  }
-  
-}*/
 
 zehnder.on('receive', (data) => {
   console.log(JSON.stringify(data));

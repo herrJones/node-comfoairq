@@ -10,3 +10,18 @@ Development of this node.js plugin is heavily inspired on the work performed by:
 An API is provided to connect and read sensor data from the ComfoAirQ-unit
 
 A test-application is provided to demonstrate the capabilities
+
+Not all functions are implemented.
+Only these are provided:
+* start session
+* keepalive
+* close session
+* register sensor
+* get version
+* list all registered apps
+* register app
+* deregister app
+
+All functions return Promises
+
+On 'received' and 'disconnect' events are provided
