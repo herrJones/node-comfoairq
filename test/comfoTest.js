@@ -15,47 +15,8 @@ const trmnl = readline.createInterface({
 });
 
 //var initialized = false;
-var connected = false;
-var reconnect = false;
-
-/*
-async function getResponse(force = false) {
-
-  if (!initialized) {
-    zehnder.options.device = settings.device;
-    zehnder.options.comfoair = settings.comfoair;
-    zehnder.options.uuid = Buffer.from(settings.uuid, 'hex');
-    zehnder.options.pin = settings.pin;
-    initialized = true;
-  }
-
-  if (connected) {
-    zehnder.receive()
-    .catch((exc) => {
-      console.error(exc);
-
-      if (exc.message == 'NOT_ALLOWED') {
-        zehnder.register();
-      }
-    })
-    .then((data) => {
-      let rxdata = JSON.stringify(data);
-      if (rxdata != '{}') {
-        console.log(rxdata);
-      }
-    });
-
-  }
-  
-
-  if (connected) {
-    zehnder.keepalive();
-  }
-  if (!force) {
-    setTimeout(getResponse, 1000);
-  }
-  
-}*/
+//var connected = false;
+//var reconnect = false;
 
 zehnder.on('receive', (data) => {
   console.log(JSON.stringify(data));
@@ -63,11 +24,11 @@ zehnder.on('receive', (data) => {
 zehnder.on('disconnect', (reason) => {
   if (reason.state == 'OTHER_SESSION') {
     console.log('other device became active');
-    reconnect = true;
+    // = true;
   }
-  connected = false;
+  //connected = false;
 })
-
+/*
 function keepAlive() {
   if (!connected) {
     if (reconnect) {
@@ -78,9 +39,10 @@ function keepAlive() {
 
   zehnder.KeepAlive();
 
-  setTimeout(keepAlive, 5000);
+  setTimeout(keepAlive, 30000);
 }
-
+*/
+/*
 async function restartSession() {
   console.log('** attempting reconnect **')
 
@@ -99,6 +61,7 @@ async function restartSession() {
     setTimeout(restartSession, 15000);
   }
 }
+*/
 
 var waitForCommand = function () {
   trmnl.question("zehnder command to test (? for help)  ",async function(answer) {
@@ -111,6 +74,7 @@ var waitForCommand = function () {
                     "info -- fetch ComfoAir version\n" +
                     "conn -- connect to ComfoAir unit\n" +
                     "sens -- register to updates on sensors\n" +
+                    "cmnd -- send a command to the unit (nodeid command - 10 FAN_MODE_HIGH)\n" +
                     "disc -- disconnect from ComfoAir unit\n" +
                     "quit -- close this application\n\n" );
 
@@ -151,12 +115,13 @@ var waitForCommand = function () {
       try {
         let result = await zehnder.StartSession(true);
         console.log(JSON.stringify(result));
-        connected = true;
+        //connected = true;
+        //reconnect = true;
 
         result = await zehnder.RegisterSensor(227);
         console.log(JSON.stringify(result));
 
-        setTimeout(keepAlive, 5000);
+        //setTimeout(keepAlive, 30000);
       }
       catch (exc) {
         console.log(exc);
@@ -169,15 +134,29 @@ var waitForCommand = function () {
       let result = await zehnder.RegisterSensor(Number(sensID));
       console.log(JSON.stringify(result));
 
-      //checkSensors = true;
+    } else if (answer.startsWith("cmnd")) {
+
+      let cmnd = answer.slice(5).split(' ');
+      
+      console.log('sending command to unit: ' + cmnd[1].toUpperCase());
+
+      try {
+      let result = await zehnder.SendCommand(Number(cmnd[0]), cmnd[1].toUpperCase());
+      console.log(JSON.stringify(result));
+      }
+      catch (exc) {
+        console.log('cmnd error: ' + exc)
+      }
     } else if (answer == "disc") {
       console.log('disconnect from ComfoAir unit\n'); 
       await zehnder.CloseSession();
-      connected = false;
+      //connected = false;
+      //reconnect = false;
     } else if (answer == "quit") {
       console.log('closing down');
       await zehnder.CloseSession();
-      connected = false;
+      //connected = false;
+      //reconnect = false
       trmnl.close();
     } 
         
