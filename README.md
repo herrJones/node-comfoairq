@@ -9,6 +9,14 @@ Development of this node.js plugin is heavily inspired on the work performed by:
 
 An API is provided to connect and read sensor data from the ComfoAirQ-unit
 
+Revision history:
+* 0.5.0 : first working version
+* 0.5.1 : general bugfixes
+* 0.5.2 : better handling of (forced) disconnects
+* 0.5.3 : complete dependencies in package.json
+* 0.5.4 : fix bug with registering devices 
+
+
 A test-application is provided to demonstrate the capabilities
 
 Not all functions are implemented as the plugin is designed for home automation
