@@ -2,7 +2,7 @@
   "pin": 1234,
   "uuid" : "20200428000000000000000009080407",
   "device" : "node-comfoairq",
-  "multicast": "10.1.1.255",
-  "comfoair": "10.1.1.25",
+  "multicast": "192.168.1.255",
+  "comfoair": "192.168.1.113",
   "debug": true
 }
