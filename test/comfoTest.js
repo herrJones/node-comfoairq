@@ -146,8 +146,12 @@ var waitForCommand = function() {
       console.log('register to updates on sensors\n');
 
       const sensID = answer.slice(5);
-      const result = await zehnder.RegisterSensor(Number(sensID));
-      console.log(JSON.stringify(result));
+      if (sensID) {
+        const result = await zehnder.RegisterSensor(Number(sensID));
+        console.log(JSON.stringify(result));
+      } else {
+          console.log('Provide sensor id as parameter');
+      }
     } else if (answer == 'disc') {
       console.log('disconnect from ComfoAir unit\n');
 
