@@ -3,6 +3,7 @@
   "uuid" : "20200428000000000000000009080407",
   "device" : "node-comfoairq",
   "multicast": "192.168.1.255",
-  "comfoair": "192.168.1.113",
+  "comfoAir": "192.168.1.113",
+  "comfoUuid": "00000000003410138001144fd71e24cc",
   "debug": true
 }

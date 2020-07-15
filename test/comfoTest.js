@@ -4,7 +4,7 @@ const comfoconnect = require('../lib/comfoconnect');
 const settings = require(__dirname + '/settings.json');
 
 const zehnder = new comfoconnect(settings);
-zehnder.discover();
+//zehnder.discover();
 
 const readline = require('readline');
 const trmnl = readline.createInterface({
