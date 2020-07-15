@@ -81,6 +81,7 @@ var waitForCommand = function() {
         'info -- fetch ComfoAir version\n' +
         'conn -- connect to ComfoAir unit\n' +
         'sens -- register to updates on sensors\n' +
+        'cmnd -- send command\n' +
         'disc -- disconnect from ComfoAir unit\n' +
         'quit -- close this application\n\n');
 
@@ -122,6 +123,12 @@ var waitForCommand = function() {
         console.log(JSON.stringify(result));
         connected = true;
 
+        result = await zehnder.RegisterSensor(67); // TEMPERATURE_PROFILE
+        console.log(JSON.stringify(result));
+
+        result = await zehnder.RegisterSensor(122); // SENSOR_FAN_SUPPLY_SPEED
+        console.log(JSON.stringify(result));
+
         result = await zehnder.RegisterSensor(227); // SENSOR_BYPASS_STATE
         console.log(JSON.stringify(result));
 
@@ -150,7 +157,17 @@ var waitForCommand = function() {
         const result = await zehnder.RegisterSensor(Number(sensID));
         console.log(JSON.stringify(result));
       } else {
-          console.log('Provide sensor id as parameter');
+        console.log('Provide sensor id as parameter');
+      }
+    } else if (answer.startsWith('cmnd')) {
+      console.log('Sending custom command\n');
+
+      const cmndName = answer.slice(5);
+      if (cmndName) {
+        const result = await zehnder.SendCommand(1, cmndName);
+        console.log(JSON.stringify(result));
+      } else {
+        console.log('Provide command name as parameter');
       }
     } else if (answer == 'disc') {
       console.log('disconnect from ComfoAir unit\n');
