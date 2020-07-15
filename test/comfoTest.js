@@ -4,7 +4,6 @@ const comfoconnect = require('../lib/comfoconnect');
 const settings = require(__dirname + '/settings.json');
 
 const zehnder = new comfoconnect(settings);
-//zehnder.discover();
 
 const readline = require('readline');
 const trmnl = readline.createInterface({
@@ -75,7 +74,7 @@ var waitForCommand = function() {
   trmnl.question('zehnder command to test (? for help)  ', async function(answer) {
     if (answer == '?') {
       console.log('?    -- this help function\n' +
-        'srch -- (re)run discovery\n' +
+        'srch -- run discovery\n' +
         'lapp -- List Registered Apps\n' +
         'rapp -- Register App\n' +
         'uapp -- UnRegister App\n' +
@@ -86,7 +85,7 @@ var waitForCommand = function() {
         'quit -- close this application\n\n');
 
     } else if (answer == 'srch') {
-      console.log('(re)running discovery\n');
+      console.log('running discovery\n');
 
       const result = await zehnder.discover();
       console.log(JSON.stringify(result));
