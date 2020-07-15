@@ -1,10 +1,9 @@
 'use strict';
 
-const comfo = require('../lib/comfoconnect');
-const zehnder = new comfo();
+const comfoconnect = require('../lib/comfoconnect');
 const settings = require(__dirname + '/settings.json');
 
-zehnder.settings = settings;
+const zehnder = new comfoconnect(settings);
 zehnder.discover();
 
 const readline = require('readline');
@@ -53,16 +52,16 @@ async function restartSession() {
     }
     connected = true;
 
-    result = await zehnder.RegisterSensor(227);
+    result = await zehnder.RegisterSensor(227); // SENSOR_BYPASS_STATE
     console.log(JSON.stringify(result));
 
-    result = await zehnder.RegisterSensor(221);
+    result = await zehnder.RegisterSensor(221); // SENSOR_TEMPERATURE_SUPPLY
     console.log(JSON.stringify(result));
-    result = await zehnder.RegisterSensor(274);
+    result = await zehnder.RegisterSensor(274); // SENSOR_TEMPERATURE_EXTRACT
     console.log(JSON.stringify(result));
-    result = await zehnder.RegisterSensor(275);
+    result = await zehnder.RegisterSensor(275); // SENSOR_TEMPERATURE_EXHAUST
     console.log(JSON.stringify(result));
-    result = await zehnder.RegisterSensor(276);
+    result = await zehnder.RegisterSensor(276); // SENSOR_TEMPERATURE_OUTDOOR
     console.log(JSON.stringify(result));
 
     setTimeout(keepAlive, 5000);
