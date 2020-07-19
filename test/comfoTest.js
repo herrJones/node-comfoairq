@@ -1,40 +1,37 @@
-'use strict'
+'use strict';
 
-const comfo = require('../lib/comfoconnect');
-const zehnder = new comfo()
-const settings = require(__dirname + "/settings.json");
+const comfoconnect = require('../lib/comfoconnect');
+const settings = require(__dirname + '/settings.json');
 
-zehnder.settings = settings;
-zehnder.discover();
+const zehnder = new comfoconnect(settings);
 
-
-const readline = require("readline");
+const readline = require('readline');
 const trmnl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
+  input: process.stdin,
+  output: process.stdout
 });
 
-var connected = false;
-var reconnect = false;
-
+let connected = false;
+let reconnect = false;
 
 zehnder.on('receive', (data) => {
   console.log(JSON.stringify(data));
 });
+
 zehnder.on('disconnect', (reason) => {
   if (reason.state == 'OTHER_SESSION') {
     console.log('other device became active');
     reconnect = true;
   }
   connected = false;
-})
+});
 
 function keepAlive() {
   if (!connected) {
     if (reconnect) {
       setTimeout(restartSession, 15000);
     }
-    return  
+    return;
   }
 
   zehnder.KeepAlive();
@@ -43,7 +40,7 @@ function keepAlive() {
 }
 
 async function restartSession() {
-  console.log('** attempting reconnect **')
+  console.log('** attempting reconnect **');
 
   try {
     let result = await zehnder.StartSession(false);
@@ -54,72 +51,71 @@ async function restartSession() {
     }
     connected = true;
 
-    result = await zehnder.RegisterSensor(227);
+    result = await zehnder.RegisterSensor(227); // SENSOR_BYPASS_STATE
     console.log(JSON.stringify(result));
 
-    result = await zehnder.RegisterSensor(221);
+    result = await zehnder.RegisterSensor(221); // SENSOR_TEMPERATURE_SUPPLY
     console.log(JSON.stringify(result));
-    result = await zehnder.RegisterSensor(274);
+    result = await zehnder.RegisterSensor(274); // SENSOR_TEMPERATURE_EXTRACT
     console.log(JSON.stringify(result));
-    result = await zehnder.RegisterSensor(275);
+    result = await zehnder.RegisterSensor(275); // SENSOR_TEMPERATURE_EXHAUST
     console.log(JSON.stringify(result));
-    result = await zehnder.RegisterSensor(276);
+    result = await zehnder.RegisterSensor(276); // SENSOR_TEMPERATURE_OUTDOOR
     console.log(JSON.stringify(result));
 
     setTimeout(keepAlive, 5000);
-  }
-  catch (exc) {
+  } catch (exc) {
     console.log(exc);
     setTimeout(restartSession, 15000);
   }
 }
 
-var waitForCommand = function () {
-  trmnl.question("zehnder command to test (? for help)  ",async function(answer) {
-    if (answer == "?") {
-        console.log("?    -- this help function\n" +
-                    "srch -- (re)run discovery\n" +
-                    "lapp -- List Registered Apps\n" +
-                    "rapp -- Register App\n" +
-                    "uapp -- UnRegister App\n" +
-                    "info -- fetch ComfoAir version\n" +
-                    "conn -- connect to ComfoAir unit\n" +
-                    "sens -- register to updates on sensors\n" +
-                    "disc -- disconnect from ComfoAir unit\n" +
-                    "quit -- close this application\n\n" );
+var waitForCommand = function() {
+  trmnl.question('zehnder command to test (? for help)  ', async function(answer) {
+    if (answer == '?') {
+      console.log('?    -- this help function\n' +
+        'srch -- run discovery\n' +
+        'lapp -- List Registered Apps\n' +
+        'rapp -- Register App\n' +
+        'uapp -- UnRegister App\n' +
+        'info -- fetch ComfoAir version\n' +
+        'conn -- connect to ComfoAir unit\n' +
+        'sens -- register to updates on sensors\n' +
+        'cmnd -- send command\n' +
+        'disc -- disconnect from ComfoAir unit\n' +
+        'quit -- close this application\n\n');
 
-    } else if (answer == "srch") {
-      console.log('(re)running discovery\n');
+    } else if (answer == 'srch') {
+      console.log('running discovery\n');
 
-      let result = await zehnder.discover();
+      const result = await zehnder.discover();
       console.log(JSON.stringify(result));
-    } else if (answer == "lapp") {
+    } else if (answer == 'lapp') {
       console.log('list registered apps\n');
-      
-      let result = await zehnder.ListRegisteredApps();
+
+      const result = await zehnder.ListRegisteredApps();
       console.log(JSON.stringify(result));
 
-    } else if (answer == "rapp") {
+    } else if (answer == 'rapp') {
       console.log('register this app\n');
-      
-      let result = await zehnder.RegisterApp();
+
+      const result = await zehnder.RegisterApp();
       console.log(JSON.stringify(result));
 
-    } else if (answer.startsWith("uapp")) {
+    } else if (answer.startsWith('uapp')) {
       console.log('unregister this app\n');
-     
-      let uuid = answer.slice(5);
-      let result = await zehnder.DeRegisterApp(uuid);
-      console.log(JSON.stringify(result));
-      
 
-    } else if (answer == "info") {
+      const uuid = answer.slice(5);
+      const result = await zehnder.DeRegisterApp(uuid);
+      console.log(JSON.stringify(result));
+
+    } else if (answer == 'info') {
       console.log('fetch ComfoAir info\n');
 
-      let result = await zehnder.VersionRequest();
+      const result = await zehnder.VersionRequest();
       console.log(JSON.stringify(result));
 
-    } else if (answer == "conn") {
+    } else if (answer == 'conn') {
       console.log('connect to ComfoAir unit\n');
 
       try {
@@ -127,58 +123,74 @@ var waitForCommand = function () {
         console.log(JSON.stringify(result));
         connected = true;
 
-        result = await zehnder.RegisterSensor(227);
+        result = await zehnder.RegisterSensor(67); // TEMPERATURE_PROFILE
         console.log(JSON.stringify(result));
 
-        result = await zehnder.RegisterSensor(221);
+        result = await zehnder.RegisterSensor(122); // SENSOR_FAN_SUPPLY_SPEED
         console.log(JSON.stringify(result));
-        result = await zehnder.RegisterSensor(274);
+
+        result = await zehnder.RegisterSensor(227); // SENSOR_BYPASS_STATE
         console.log(JSON.stringify(result));
-        result = await zehnder.RegisterSensor(275);
+
+        result = await zehnder.RegisterSensor(221); // SENSOR_TEMPERATURE_SUPPLY
         console.log(JSON.stringify(result));
-        result = await zehnder.RegisterSensor(276);
+
+        result = await zehnder.RegisterSensor(274); // SENSOR_TEMPERATURE_EXTRACT
+        console.log(JSON.stringify(result));
+
+        result = await zehnder.RegisterSensor(275); // SENSOR_TEMPERATURE_EXHAUST
+        console.log(JSON.stringify(result));
+
+        result = await zehnder.RegisterSensor(276); // SENSOR_TEMPERATURE_OUTDOOR
         console.log(JSON.stringify(result));
 
         setTimeout(keepAlive, 5000);
-      }
-      catch (exc) {
+      } catch (exc) {
         console.log(exc);
       }
 
-    } else if (answer.startsWith("sens")) {
+    } else if (answer.startsWith('sens')) {
       console.log('register to updates on sensors\n');
 
-      let sensID = answer.slice(5)
-      let result = await zehnder.RegisterSensor(Number(sensID));
-      console.log(JSON.stringify(result));
+      const sensID = answer.slice(5);
+      if (sensID) {
+        const result = await zehnder.RegisterSensor(Number(sensID));
+        console.log(JSON.stringify(result));
+      } else {
+        console.log('Provide sensor id as parameter');
+      }
+    } else if (answer.startsWith('cmnd')) {
+      console.log('Sending custom command\n');
 
-      //checkSensors = true;
-    } else if (answer == "disc") {
-      console.log('disconnect from ComfoAir unit\n'); 
+      const cmndName = answer.slice(5);
+      if (cmndName) {
+        const result = await zehnder.SendCommand(1, cmndName);
+        console.log(JSON.stringify(result));
+      } else {
+        console.log('Provide command name as parameter');
+      }
+    } else if (answer == 'disc') {
+      console.log('disconnect from ComfoAir unit\n');
+
       await zehnder.CloseSession();
       connected = false;
-    } else if (answer == "quit") {
+    } else if (answer == 'quit') {
       console.log('closing down');
+
       await zehnder.CloseSession();
       connected = false;
       trmnl.close();
-    } 
-        
+    }
+
     waitForCommand();
-    
+
   });
 
-}
-/*
-zehnder.bridge.on('receive', () => {
-  console.log('test')
-})*/
+};
 
 waitForCommand();
 
-//setTimeout(getResponse, 1000);
-
-trmnl.on("close", function() {
-    console.log("\nBYE BYE !!!");
-    process.exit(0);
+trmnl.on('close', function() {
+  console.log('\nBYE BYE !!!');
+  process.exit(0);
 });

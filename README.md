@@ -1,7 +1,8 @@
 # node-comfoairq
+
 Library to control a Zehnder Comfoair Q series of ventilation devices
 
-A Zehnder Comfoconnect LAN C interface is required to make this work
+A Zehnder ComfoConnect LAN C interface is required to make this work
 
 Development of this node.js plugin is heavily inspired on the work performed by:
 * Michael Arnauts (https://github.com/michaelarnauts/comfoconnect)
@@ -10,17 +11,30 @@ Development of this node.js plugin is heavily inspired on the work performed by:
 An API is provided to connect and read sensor data from the ComfoAirQ-unit
 
 Revision history:
+
 * 0.5.0 : first working version
 * 0.5.1 : general bugfixes
 * 0.5.2 : better handling of (forced) disconnects
 * 0.5.3 : complete dependencies in package.json
 * 0.5.4 : fix bug with registering devices 
 
+## Test Script
 
 A test-application is provided to demonstrate the capabilities
 
+1. Update the test/settings.json
+2. Run the script
+
+```
+npm run test
+```
+
+## Range of functions
+
 Not all functions are implemented as the plugin is designed for home automation
+
 Only these are provided:
+
 * start session
 * keepalive
 * send command
