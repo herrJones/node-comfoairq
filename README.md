@@ -16,7 +16,9 @@ Revision history:
 * 0.5.1 : general bugfixes
 * 0.5.2 : better handling of (forced) disconnects
 * 0.5.3 : complete dependencies in package.json
-* 0.5.4 : fix bug with registering devices 
+* 0.5.4 : fix bug with registering devices
+* 0.5.5 : extra commands to send to the comfoconnect device
+          get time added
 
 ## Test Script
 
@@ -41,6 +43,7 @@ Only these are provided:
 * close session
 * register sensor
 * get version
+* get time
 * list all registered apps
 * register app
 * deregister app

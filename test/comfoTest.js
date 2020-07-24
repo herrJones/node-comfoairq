@@ -82,6 +82,7 @@ var waitForCommand = function() {
         'conn -- connect to ComfoAir unit\n' +
         'sens -- register to updates on sensors\n' +
         'cmnd -- send command\n' +
+        'time -- fetch system time\n' +
         'disc -- disconnect from ComfoAir unit\n' +
         'quit -- close this application\n\n');
 
@@ -169,6 +170,12 @@ var waitForCommand = function() {
       } else {
         console.log('Provide command name as parameter');
       }
+    } else if (answer.startsWith('time')) {
+      console.log('Fetching time\n');
+
+      const result = await zehnder.TimeRequest();
+      console.log(JSON.stringify(result));
+     
     } else if (answer == 'disc') {
       console.log('disconnect from ComfoAir unit\n');
 
