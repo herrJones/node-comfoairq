@@ -51,3 +51,5 @@ Only these are provided:
 All functions return Promises
 
 On 'received' and 'disconnect' events are provided
+
+If a valid UUID is provided for the comfoconnect device, a discovery operation is no longer needed

@@ -43,14 +43,14 @@ async function restartSession() {
   console.log('** attempting reconnect **');
 
   try {
-    let result = await zehnder.StartSession(false);
+    const result = await zehnder.StartSession(false);
     console.log(JSON.stringify(result));
 
     if (result[0].error != 'OK') {
       throw new Error(result[0].error);
     }
     connected = true;
-
+/*
     result = await zehnder.RegisterSensor(227); // SENSOR_BYPASS_STATE
     console.log(JSON.stringify(result));
 
@@ -62,7 +62,7 @@ async function restartSession() {
     console.log(JSON.stringify(result));
     result = await zehnder.RegisterSensor(276); // SENSOR_TEMPERATURE_OUTDOOR
     console.log(JSON.stringify(result));
-
+*/
     setTimeout(keepAlive, 5000);
   } catch (exc) {
     console.log(exc);
@@ -70,7 +70,7 @@ async function restartSession() {
   }
 }
 
-var waitForCommand = function() {
+const waitForCommand = function() {
   trmnl.question('zehnder command to test (? for help)  ', async function(answer) {
     if (answer == '?') {
       console.log('?    -- this help function\n' +
@@ -123,7 +123,7 @@ var waitForCommand = function() {
         let result = await zehnder.StartSession(true);
         console.log(JSON.stringify(result));
         connected = true;
-
+/*
         result = await zehnder.RegisterSensor(67); // TEMPERATURE_PROFILE
         console.log(JSON.stringify(result));
 
@@ -144,7 +144,7 @@ var waitForCommand = function() {
 
         result = await zehnder.RegisterSensor(276); // SENSOR_TEMPERATURE_OUTDOOR
         console.log(JSON.stringify(result));
-
+*/
         setTimeout(keepAlive, 5000);
       } catch (exc) {
         console.log(exc);
@@ -201,3 +201,5 @@ trmnl.on('close', function() {
   console.log('\nBYE BYE !!!');
   process.exit(0);
 });
+
+zehnder.discover();
