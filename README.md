@@ -53,3 +53,32 @@ All functions return Promises
 On 'received' and 'disconnect' events are provided
 
 If a valid UUID is provided for the comfoconnect device, a discovery operation is no longer needed
+
+## Quick-start
+
+```javascript
+const comfoconnect = require('node-comfoairq');
+const settings = require(__dirname + '/settings.json');
+
+const zehnder = new comfoconnect(settings);
+
+zehnder.on('receive', (data) => {
+  console.log(JSON.stringify(data));
+});
+
+zehnder.on('disconnect', (reason) => {
+  if (reason.state == 'OTHER_SESSION') {
+    console.log('other device became active');
+    reconnect = true;
+  }
+  connected = false;
+});
+
+zehnder.discover();
+
+await zehnder.StartSession(true);
+// ..... do something ......
+// -> find some inspiration in test\comfoTest.js
+await zehnder.CloseSession();
+
+```
