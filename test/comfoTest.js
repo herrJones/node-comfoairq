@@ -50,7 +50,7 @@ async function restartSession() {
       throw new Error(result[0].error);
     }
     connected = true;
-/*
+    /*
     result = await zehnder.RegisterSensor(227); // SENSOR_BYPASS_STATE
     console.log(JSON.stringify(result));
 
@@ -123,7 +123,7 @@ const waitForCommand = function() {
         let result = await zehnder.StartSession(true);
         console.log(JSON.stringify(result));
         connected = true;
-/*
+        /*
         result = await zehnder.RegisterSensor(67); // TEMPERATURE_PROFILE
         console.log(JSON.stringify(result));
 
