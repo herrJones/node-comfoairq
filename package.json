@@ -1,6 +1,6 @@
 {
   "name": "node-comfoairq",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "NodeJS Zehnder ComfoAirQ implementation",
   "main": "lib/comfoconnect.js",
   "keywords": [
@@ -21,13 +21,13 @@
     "url": "git+https://github.com/herrJones/node-comfoairq.git"
   },
   "dependencies": {
-    "events": "^3.1.0",
-    "net": "^1.0.2",
-    "protobufjs": "^6.9.0",
-    "safe-buffer": "^5.2.1"
+    "events": "*",
+    "net": "*",
+    "protobufjs": "^6.*",
+    "safe-buffer": "^5.*"
   },
   "devDependencies": {
-    "eslint": "^7.11.0"
+    "eslint": "*"
   },
   "bugs": {
     "url": "https://github.com/herrJones/node-comfoairq/issues"
