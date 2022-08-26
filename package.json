@@ -27,7 +27,7 @@
     "safe-buffer": "^5.*"
   },
   "devDependencies": {
-    "eslint": "*"
+    "eslint": "^8.22.0"
   },
   "bugs": {
     "url": "https://github.com/herrJones/node-comfoairq/issues"

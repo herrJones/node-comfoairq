@@ -19,6 +19,8 @@ Revision history:
 * 0.5.4 : fix bug with registering devices
 * 0.5.5 : extra commands to send to the comfoconnect device
           get time added
+* 0.5.8 : better use of debug messages
+          update used packages
 
 ## Test Script
 
@@ -56,6 +58,23 @@ If a valid UUID is provided for the comfoconnect device, a discovery operation i
 
 ## Quick-start
 
+
+example settings.json
+```
+
+{
+  "pin": 1234,
+  "uuid" : "20200428000000000000000009080407",
+  "device" : "node-comfoairq",
+  "multicast": "192.168.1.255",
+  "comfoair": "192.168.1.113",
+  "comfoUuid": "00000000003410138001144fd71e24cc",
+  "debug": false,
+  "verbose": true
+} 
+```
+
+example code
 ```javascript
 const comfoconnect = require('node-comfoairq');
 const settings = require(__dirname + '/settings.json');
