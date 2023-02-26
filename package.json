@@ -1,6 +1,6 @@
 {
   "name": "node-comfoairq",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "NodeJS Zehnder ComfoAirQ implementation",
   "main": "lib/comfoconnect.js",
   "keywords": [

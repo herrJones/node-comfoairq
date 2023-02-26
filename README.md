@@ -19,6 +19,7 @@ Revision history:
 * 0.5.4 : fix bug with registering devices
 * 0.5.5 : extra commands to send to the comfoconnect device
           get time added
+* 0.5.8 : ventilation mode commands fixed
 
 ## Test Script
 
